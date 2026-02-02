@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .calculator-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            max-width: 250px;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2em;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .form-section:last-of-type {
+            border-bottom: none;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        .label-with-help {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .help-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .help-button:hover {
+            background: #5568d3;
+        }
+
+        .help-text {
+            display: none;
+            background: #f0f4ff;
+            border-left: 3px solid #667eea;
+            padding: 12px;
+            margin-top: 8px;
+            font-size: 0.9em;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .help-text.show {
+            display: block;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .radio-option:hover {
+            border-color: #667eea;
+            background: #f9fafb;
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .radio-option.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .radio-label {
+            flex: 1;
+        }
+
+        .radio-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .radio-details {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .calculate-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .calculate-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .calculate-button:active {
+            transform: translateY(0);
+        }
+
+        .results {
+            display: none;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #667eea;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .results h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .result-item {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .result-item h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .result-value {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .result-breakdown {
+            font-size: 0.9em;
+            color: #666;
+            margin-left: 15px;
+            line-height: 1.8;
+        }
+
+        .result-note {
+            font-size: 0.85em;
+            color: #888;
+            font-style: italic;
+            margin-top: 8px;
+            margin-left: 15px;
+        }
+
+        .disclaimers {
+            margin-top: 30px;
+            padding: 20px;
+            background: #fff9e6;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .disclaimers p {
+            font-size: 0.85em;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .disclaimers p:last-child {
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 600px) {
+            .calculator-container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <div class="logo-container">
+            <img src="pagebrook-logo.png" alt="Pagebrook Logo" class="logo">
+        </div>
+        <h1>Loan Calculator</h1>
+
+        <form id="loanForm">
+            <div class="form-section">
+                <div class="form-group">
+                    <label>Type of Loan</label>
+                    <div class="radio-group">
+                        <div class="radio-option" onclick="selectLoanType('asset')">
+                            <input type="radio" name="loanType" value="asset" id="assetBased" required>
+                            <div class="radio-label">
+                                <div class="radio-title">Asset-based</div>
+                                <div class="radio-details">Approval 100% based on asset | 14% interest | 3% loan origination fee</div>
+                            </div>
+                        </div>
+                        <div class="radio-option" onclick="selectLoanType('underwritten')">
+                            <input type="radio" name="loanType" value="underwritten" id="fullyUnderwritten" required>
+                            <div class="radio-label">
+                                <div class="radio-title">Fully underwritten</div>
+                                <div class="radio-details">Approval based on underwriting the borrower | 12% interest | 2% loan origination fee</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="purchasePrice">Estimated Property Purchase Price</label>
+                    <input type="text" id="purchasePrice" placeholder="$0,000,000.00" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="rehabCost">Estimated Rehabilitation Cost</label>
+                    <input type="text" id="rehabCost" placeholder="$0,000,000.00" required>
+                </div>
+
+                <div class="form-group">
+                    <div class="label-with-help">
+                        <label for="arv">ARV (After Repairs Value)</label>
+                        <button type="button" class="help-button" onclick="toggleHelp()">?</button>
+                    </div>
+                    <div class="help-text" id="arvHelp">
+                        To calculate your project's After Repair Value (ARV), find 3–5 comparable properties ("comps") sold within the last 3–6 months that are similar in size, location, and condition to your property after renovations. Calculate the average price per square foot of these comps and multiply it by your subject property's square footage. Get in contact with us if you need help with this.
+                    </div>
+                    <input type="text" id="arv" placeholder="$0,000,000.00" required>
+                </div>
+            </div>
+
+            <button type="submit" class="calculate-button">Calculate</button>
+        </form>
+
+        <div class="results" id="results">
+            <h2>Loan Estimate</h2>
+
+            <div class="result-item">
+                <h3>Estimated Maximum Loan (65% of ARV)</h3>
+                <div class="result-value" id="maxLoan">$0.00</div>
+                <div class="result-breakdown">
+                    <strong>Initial Funding:</strong> <span id="initialFunding">$0.00</span><br>
+                    <strong>Rehab Holdback:</strong> <span id="rehabHoldback">$0.00</span>
+                    <div class="result-note">To be released in draws after the completion of construction milestones</div>
+                </div>
+            </div>
+
+            <div class="result-item">
+                <h3>Required Down Payment</h3>
+                <div class="result-value" id="downPayment">$0.00</div>
+            </div>
+
+            <div class="result-item">
+                <h3>Estimated Fees</h3>
+                <div class="result-breakdown">
+                    <strong>Loan Origination Fee:</strong> <span id="originationFee">$0.00</span><br>
+                    <strong>Admin Fee:</strong> $1,800.00<br>
+                    <strong>Total Fees:</strong> <span id="totalFees">$0.00</span>
+                </div>
+            </div>
+
+            <div class="result-item">
+                <h3>Estimated Interest Payment</h3>
+                <div class="result-breakdown">
+                    <strong>Monthly Interest:</strong> <span id="monthlyInterest">$0.00</span><br>
+                    <strong>Per Diem Interest:</strong> <span id="perDiemInterest">$0.00</span>
+                </div>
+            </div>
+
+            <div class="disclaimers">
+                <p>*This is only an estimation, actual amounts must be discussed with your broker or loan originator.</p>
+                <p>**Please note that prepaid interest will need to be paid at closing as well. This is the interest per diem from the actual day of loan closing to the end of the month.</p>
+                <p>***Normal loan closing costs will apply.</p>
+                <p>****First-time borrowers are required a 10% down payment.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Format currency input as user types
+        function formatCurrency(input) {
+            let value = input.value.replace(/[^0-9.]/g, '');
+
+            // Handle decimal places
+            const parts = value.split('.');
+            if (parts.length > 2) {
+                value = parts[0] + '.' + parts.slice(1).join('');
+            }
+            if (parts[1] && parts[1].length > 2) {
+                value = parts[0] + '.' + parts[1].substring(0, 2);
+            }
+
+            const numValue = parseFloat(value) || 0;
+            input.value = '$' + numValue.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Parse currency string to number
+        function parseCurrency(str) {
+            return parseFloat(str.replace(/[^0-9.]/g, '')) || 0;
+        }
+
+        // Format number as currency for display
+        function displayCurrency(num) {
+            return '$' + num.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Add event listeners to currency inputs
+        document.getElementById('purchasePrice').addEventListener('blur', function() {
+            formatCurrency(this);
+        });
+        document.getElementById('rehabCost').addEventListener('blur', function() {
+            formatCurrency(this);
+        });
+        document.getElementById('arv').addEventListener('blur', function() {
+            formatCurrency(this);
+        });
+
+        // Handle radio button selection
+        function selectLoanType(type) {
+            const radioButtons = document.querySelectorAll('input[name="loanType"]');
+            const radioOptions = document.querySelectorAll('.radio-option');
+
+            radioOptions.forEach(option => option.classList.remove('selected'));
+
+            if (type === 'asset') {
+                document.getElementById('assetBased').checked = true;
+                document.getElementById('assetBased').parentElement.classList.add('selected');
+            } else {
+                document.getElementById('fullyUnderwritten').checked = true;
+                document.getElementById('fullyUnderwritten').parentElement.classList.add('selected');
+            }
+        }
+
+        // Toggle help text
+        function toggleHelp() {
+            const helpText = document.getElementById('arvHelp');
+            helpText.classList.toggle('show');
+        }
+
+        // Form submission and calculation
+        document.getElementById('loanForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Get form values
+            const loanType = document.querySelector('input[name="loanType"]:checked').value;
+            const purchasePrice = parseCurrency(document.getElementById('purchasePrice').value);
+            const rehabCost = parseCurrency(document.getElementById('rehabCost').value);
+            const arv = parseCurrency(document.getElementById('arv').value);
+
+            // Determine interest rate and origination fee based on loan type
+            let interestRate, originationFeeRate;
+            if (loanType === 'asset') {
+                interestRate = 0.14;
+                originationFeeRate = 0.03;
+            } else {
+                interestRate = 0.12;
+                originationFeeRate = 0.02;
+            }
+
+            // Calculate maximum loan (65% of ARV)
+            const maxLoan = arv * 0.65;
+
+            // Calculate initial funding and rehab holdback
+            const rehabHoldback = rehabCost;
+            const initialFunding = maxLoan - rehabCost;
+
+            // Calculate required down payment
+            const totalCost = purchasePrice + rehabCost;
+            const downPayment = Math.max(0, totalCost - maxLoan);
+
+            // Calculate fees
+            const originationFee = maxLoan * originationFeeRate;
+            const adminFee = 1800;
+            const totalFees = originationFee + adminFee;
+
+            // Calculate interest payments
+            const monthlyInterest = (maxLoan * interestRate) / 12;
+            const perDiemInterest = (maxLoan * interestRate) / 360;
+
+            // Display results
+            document.getElementById('maxLoan').textContent = displayCurrency(maxLoan);
+            document.getElementById('initialFunding').textContent = displayCurrency(initialFunding);
+            document.getElementById('rehabHoldback').textContent = displayCurrency(rehabHoldback);
+            document.getElementById('downPayment').textContent = displayCurrency(downPayment);
+            document.getElementById('originationFee').textContent = displayCurrency(originationFee);
+            document.getElementById('totalFees').textContent = displayCurrency(totalFees);
+            document.getElementById('monthlyInterest').textContent = displayCurrency(monthlyInterest);
+            document.getElementById('perDiemInterest').textContent = displayCurrency(perDiemInterest);
+
+            // Show results section
+            document.getElementById('results').classList.add('show');
+
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+    </script>
+</body>
+</html>
