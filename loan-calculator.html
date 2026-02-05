@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagebrook Capital - Loan Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: white;
+            min-height: 100vh;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 100%;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 10px 60px 10px;
+        }
+
+        /* Step 1: Property Selection */
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .property-selection {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .property-selection h1 {
+            color: #414143;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+
+        .property-selection p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .selection-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .selection-button {
+            background: white;
+            border: 3px solid #2596be;
+            color: #2596be;
+            padding: 20px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .selection-button:hover {
+            background: #2596be;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(37, 150, 190, 0.3);
+        }
+
+        /* Step 2: Calculator Layout */
+        .calculator-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 30px 20px;
+        }
+
+        .calculator-column {
+            min-height: 400px;
+        }
+
+        .calculator-column h2 {
+            color: #414143;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #2596be;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #414143;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .label-with-help {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .help-button {
+            background: #2596be;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .help-button:hover {
+            background: #ed2f6a;
+        }
+
+        .help-text {
+            display: none;
+            background: #f0f8fc;
+            border-left: 3px solid #2596be;
+            padding: 12px;
+            margin-top: 8px;
+            font-size: 0.9em;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .help-text.show {
+            display: block;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .radio-option:hover {
+            border-color: #2596be;
+            background: #f9fafb;
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #2596be;
+        }
+
+        .radio-option.selected {
+            border-color: #2596be;
+            background: #f0f8fc;
+        }
+
+        .radio-label {
+            flex: 1;
+        }
+
+        .radio-title {
+            font-weight: 600;
+            color: #414143;
+            margin-bottom: 4px;
+        }
+
+        .radio-details {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus {
+            outline: none;
+            border-color: #2596be;
+        }
+
+        .calculate-button {
+            background: #2596be;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .calculate-button:hover {
+            background: #ed2f6a;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(237, 47, 106, 0.3);
+        }
+
+        .calculate-button:active {
+            transform: translateY(0);
+        }
+
+        /* Results Column */
+        .results-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #999;
+            font-size: 1.1em;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .results-content {
+            display: none;
+        }
+
+        .results-content.show {
+            display: block;
+        }
+
+        .result-item {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #2596be;
+        }
+
+        .result-item h3 {
+            color: #414143;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .result-value {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #2596be;
+            margin-bottom: 8px;
+        }
+
+        .result-breakdown {
+            font-size: 0.9em;
+            color: #666;
+            margin-left: 15px;
+            line-height: 1.8;
+        }
+
+        .result-note {
+            font-size: 0.85em;
+            color: #888;
+            font-style: italic;
+            margin-top: 8px;
+            margin-left: 15px;
+        }
+
+        .disclaimers {
+            margin-top: 20px;
+            padding: 20px;
+            background: #fff9e6;
+            border-radius: 8px;
+            border-left: 4px solid #ed2f6a;
+        }
+
+        .disclaimers p {
+            font-size: 0.85em;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .disclaimers p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Contact Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content h2 {
+            color: #414143;
+            margin-bottom: 10px;
+        }
+
+        .modal-content p {
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-top: 3px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #2596be;
+        }
+
+        .checkbox-group label {
+            font-size: 0.9em;
+            line-height: 1.5;
+            color: #555;
+            cursor: pointer;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .modal-button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-button.primary {
+            background: #2596be;
+            color: white;
+        }
+
+        .modal-button.primary:hover {
+            background: #ed2f6a;
+        }
+
+        .modal-button.secondary {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .modal-button.secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .error-message {
+            color: #ed2f6a;
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Google Place Picker Styling */
+        #place-picker-container {
+            width: 100%;
+        }
+
+        gmpx-place-picker {
+            width: 100%;
+        }
+
+        #addressMessage {
+            min-height: 24px;
+        }
+
+        #addressMessage.valid {
+            color: #27ae60;
+        }
+
+        #addressMessage.invalid {
+            color: #ed2f6a;
+        }
+
+        .checkmark {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #414143;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 0.85em;
+            z-index: 100;
+        }
+
+        /* Responsive Design - Only collapse on very small screens */
+        @media (max-width: 768px) {
+            .calculator-layout {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .results-placeholder {
+                display: none;
+            }
+
+            .calculator-column h2 {
+                font-size: 1.5em;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .property-selection,
+            .calculator-layout,
+            .modal-content {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .calculator-column h2 {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/@googlemaps/extended-component-library/0.6.11/index.min.js"></script>
+</head>
+<body>
+    <gmpx-api-loader key="AIzaSyDCNlkcUWToVFNAV03OwiHfouIvmo8UpUE" solution-channel="GMP_GE_placepicker_v2"></gmpx-api-loader>
+
+    <div class="container">
+        <!-- Step 1: Property Selection -->
+        <div id="step1" class="step active">
+            <div class="property-selection">
+                <h1>Welcome to Pagebrook Capital's Loan Calculator</h1>
+                <p>Let's start discussing your next project</p>
+                <div class="selection-buttons">
+                    <button class="selection-button" onclick="selectPropertyStatus('identified')">
+                        I have already identified my property
+                    </button>
+                    <button class="selection-button" onclick="selectPropertyStatus('browsing')">
+                        I'm just browsing
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Calculator -->
+        <div id="step2" class="step">
+            <div class="calculator-layout">
+                <!-- Left Column: Inputs -->
+                <div class="calculator-column">
+                    <h2>Loan Details</h2>
+                    <form id="loanForm">
+                        <div class="form-group" id="addressGroup" style="display: none;">
+                            <label>Property Address</label>
+                            <div id="place-picker-container" style="margin-top: 8px;">
+                                <gmpx-place-picker id="propertyAddress" placeholder="Enter your property address" country="US"></gmpx-place-picker>
+                            </div>
+                            <div id="addressMessage" style="margin-top: 12px; font-size: 0.9em; display: flex; align-items: center; gap: 8px;">
+                                <span id="addressMessageText" style="color: #999;">Please select your property address</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Type of Loan</label>
+                            <div class="radio-group">
+                                <div class="radio-option" onclick="selectLoanType('asset')">
+                                    <input type="radio" name="loanType" value="asset" id="assetBased" required>
+                                    <div class="radio-label">
+                                        <div class="radio-title">Asset-based</div>
+                                        <div class="radio-details">Approval 100% based on asset | 14% interest | 3% loan origination fee</div>
+                                    </div>
+                                </div>
+                                <div class="radio-option" onclick="selectLoanType('underwritten')">
+                                    <input type="radio" name="loanType" value="underwritten" id="fullyUnderwritten" required>
+                                    <div class="radio-label">
+                                        <div class="radio-title">Fully underwritten</div>
+                                        <div class="radio-details">Approval based on underwriting the borrower | 12% interest | 2% loan origination fee</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="purchasePrice">Estimated Property Purchase Price</label>
+                            <input type="text" id="purchasePrice" placeholder="$0,000,000.00" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="rehabCost">Estimated Rehabilitation Cost</label>
+                            <input type="text" id="rehabCost" placeholder="$0,000,000.00" required>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="label-with-help">
+                                <label for="arv">ARV (After Repairs Value)</label>
+                                <button type="button" class="help-button" onclick="toggleHelp()">?</button>
+                            </div>
+                            <div class="help-text" id="arvHelp">
+                                To calculate your project's After Repair Value (ARV), find 3–5 comparable properties ("comps") sold within the last 3–6 months that are similar in size, location, and condition to your property after renovations. Calculate the average price per square foot of these comps and multiply it by your subject property's square footage. Get in contact with us if you need help with this.
+                            </div>
+                            <input type="text" id="arv" placeholder="$0,000,000.00" required>
+                        </div>
+
+                        <button type="submit" class="calculate-button">Calculate Loan</button>
+                    </form>
+                </div>
+
+                <!-- Right Column: Results -->
+                <div class="calculator-column">
+                    <h2>Your Results</h2>
+                    <div class="results-placeholder" id="resultsPlaceholder">
+                        Complete the form and click "Calculate Loan" to see your results
+                    </div>
+                    <div class="results-content" id="resultsContent">
+                        <div class="result-item">
+                            <h3>Estimated Maximum Loan (65% of ARV)</h3>
+                            <div class="result-value" id="maxLoan">$0.00</div>
+                            <div class="result-breakdown">
+                                <strong>Initial Funding:</strong> <span id="initialFunding">$0.00</span><br>
+                                <strong>Rehab Holdback:</strong> <span id="rehabHoldback">$0.00</span>
+                                <div class="result-note">To be released in draws after the completion of construction milestones</div>
+                            </div>
+                        </div>
+
+                        <div class="result-item">
+                            <h3>Required Down Payment</h3>
+                            <div class="result-value" id="downPayment">$0.00</div>
+                        </div>
+
+                        <div class="result-item">
+                            <h3>Estimated Fees</h3>
+                            <div class="result-breakdown">
+                                <strong>Loan Origination Fee:</strong> <span id="originationFee">$0.00</span><br>
+                                <strong>Admin Fee:</strong> $1,800.00<br>
+                                <strong>Total Fees:</strong> <span id="totalFees">$0.00</span>
+                            </div>
+                        </div>
+
+                        <div class="result-item">
+                            <h3>Estimated Interest Payment</h3>
+                            <div class="result-breakdown">
+                                <strong>Monthly Interest:</strong> <span id="monthlyInterest">$0.00</span><br>
+                                <strong>Per Diem Interest:</strong> <span id="perDiemInterest">$0.00</span>
+                            </div>
+                        </div>
+
+                        <div class="disclaimers">
+                            <p>*This is only an estimation, actual amounts must be discussed with your broker or loan originator.</p>
+                            <p>**Please note that prepaid interest will need to be paid at closing as well. This is the interest per diem from the actual day of loan closing to the end of the month.</p>
+                            <p>***Normal loan closing costs will apply.</p>
+                            <p>****First-time borrowers are required a 10% down payment.</p>
+                        </div>
+
+                        <button type="button" class="calculate-button" onclick="resetCalculator()" style="margin-top: 20px;">
+                            New Loan Estimation
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Information Modal -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <h2>Get Your Results</h2>
+            <p>Please provide your contact information to view your loan calculation results.</p>
+
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="fullName">Full Name *</label>
+                    <input type="text" id="fullName" required>
+                    <div class="error-message" id="nameError">Please enter your full name</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" pattern="[^\s@]+@[^\s@]+\.[^\s@]+" placeholder="user@domain.com" required>
+                    <div class="error-message" id="emailError">Please enter a valid email (e.g., user@domain.com)</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone *</label>
+                    <input type="tel" id="phone" pattern="[0-9+\-]{9,20}" placeholder="+1-234-567-8900" required>
+                    <div class="error-message" id="phoneError">Phone must be 9-20 characters (numbers, +, - only)</div>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="consent" required>
+                    <label for="consent">By checking this box, I consent to Pagebrook Capital collecting my contact information and contacting me about investment opportunities and services via email, phone, or text.</label>
+                </div>
+                <div class="error-message" id="consentError">You must agree to continue</div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="disclaimer" required>
+                    <label for="disclaimer">I understand that this is an experimental product meant to provide quick referencial data, which does not constitute a binding product offer or financial advice.</label>
+                </div>
+                <div class="error-message" id="disclaimerError">You must agree to continue</div>
+
+                <div class="modal-buttons">
+                    <button type="button" class="modal-button secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="modal-button primary">View Results</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        © 2026 Pagebrook Capital Inc. All rights reserved.
+    </div>
+
+    <script>
+        // Global variables to store calculation data
+        let calculationData = {};
+        let propertyStatus = '';
+        let selectedPlace = null;
+        const ALLOWED_STATES = ['KS', 'MO', 'TX', 'OK', 'FL', 'NC'];
+
+        // Step 1: Property selection
+        function selectPropertyStatus(status) {
+            propertyStatus = status;
+            document.getElementById('step1').classList.remove('active');
+            document.getElementById('step2').classList.add('active');
+
+            // Show address field if property already identified
+            const addressGroup = document.getElementById('addressGroup');
+            if (status === 'identified') {
+                addressGroup.style.display = 'block';
+                setupAddressListener();
+            } else {
+                addressGroup.style.display = 'none';
+            }
+        }
+
+        // Setup listener for address changes
+        function setupAddressListener() {
+            const picker = document.getElementById('propertyAddress');
+
+            // Try multiple event listeners to catch when place is selected
+            const handlePlaceChange = function() {
+                setTimeout(() => {
+                    const place = picker.value;
+                    console.log('Place value changed:', place);
+
+                    if (place && place.formattedAddress) {
+                        selectedPlace = place;
+                        validateAndShowAddress(place);
+                    } else if (!place || (typeof place === 'string' && place.trim() === '')) {
+                        selectedPlace = null;
+                        updateAddressMessage('Please select your property address', 'neutral');
+                    }
+                }, 100);
+            };
+
+            // Listen for various events that might indicate place selection
+            picker.addEventListener('gmpx_placechange', handlePlaceChange);
+            picker.addEventListener('change', handlePlaceChange);
+            picker.addEventListener('blur', handlePlaceChange);
+            picker.addEventListener('input', handlePlaceChange);
+
+            // Also set up a polling mechanism to check for changes
+            let lastValue = null;
+            setInterval(() => {
+                const currentValue = picker.value;
+                if (currentValue !== lastValue) {
+                    lastValue = currentValue;
+                    if (currentValue && currentValue.formattedAddress) {
+                        selectedPlace = currentValue;
+                        validateAndShowAddress(currentValue);
+                    } else if (!currentValue || (typeof currentValue === 'string' && currentValue.trim() === '')) {
+                        selectedPlace = null;
+                        updateAddressMessage('Please select your property address', 'neutral');
+                    }
+                }
+            }, 500);
+        }
+
+        // Validate address and show appropriate message
+        function validateAndShowAddress(place) {
+            console.log('Validating address:', place);
+
+            // Extract state from the address components
+            const addressComponents = place.addressComponents || [];
+            let stateCode = '';
+
+            for (let component of addressComponents) {
+                if (component.types && component.types.includes('administrative_area_level_1')) {
+                    stateCode = component.shortText || '';
+                    break;
+                }
+            }
+
+            console.log('Extracted state code:', stateCode);
+            console.log('Address:', place.formattedAddress);
+
+            if (ALLOWED_STATES.includes(stateCode)) {
+                console.log('State is allowed!');
+                updateAddressMessage('✓ ' + place.formattedAddress, 'valid');
+            } else {
+                console.log('State not allowed');
+                updateAddressMessage("Pagebrook Capital doesn't operate in this market yet. Stay tuned for updates", 'invalid');
+            }
+        }
+
+        // Update address message display
+        function updateAddressMessage(message, type) {
+            const messageElement = document.getElementById('addressMessage');
+            const messageText = document.getElementById('addressMessageText');
+
+            if (type === 'valid') {
+                messageElement.style.color = '#27ae60';
+            } else if (type === 'invalid') {
+                messageElement.style.color = '#d13c3c';
+            } else {
+                messageElement.style.color = '#999';
+            }
+
+            messageText.textContent = message;
+        }
+
+        // Format currency input
+        function formatCurrency(input) {
+            let value = input.value.replace(/[^0-9.]/g, '');
+            const parts = value.split('.');
+            if (parts.length > 2) {
+                value = parts[0] + '.' + parts.slice(1).join('');
+            }
+            if (parts[1] && parts[1].length > 2) {
+                value = parts[0] + '.' + parts[1].substring(0, 2);
+            }
+            const numValue = parseFloat(value) || 0;
+            input.value = '$' + numValue.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Parse currency string to number
+        function parseCurrency(str) {
+            return parseFloat(str.replace(/[^0-9.]/g, '')) || 0;
+        }
+
+        // Format number as currency for display
+        function displayCurrency(num) {
+            return '$' + num.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Add event listeners to currency inputs
+        document.getElementById('purchasePrice').addEventListener('blur', function() {
+            formatCurrency(this);
+        });
+        document.getElementById('rehabCost').addEventListener('blur', function() {
+            formatCurrency(this);
+        });
+        document.getElementById('arv').addEventListener('blur', function() {
+            formatCurrency(this);
+        });
+
+        // Handle loan type selection
+        function selectLoanType(type) {
+            const radioOptions = document.querySelectorAll('.radio-option');
+            radioOptions.forEach(option => option.classList.remove('selected'));
+
+            if (type === 'asset') {
+                document.getElementById('assetBased').checked = true;
+                document.getElementById('assetBased').parentElement.classList.add('selected');
+            } else {
+                document.getElementById('fullyUnderwritten').checked = true;
+                document.getElementById('fullyUnderwritten').parentElement.classList.add('selected');
+            }
+        }
+
+        // Toggle help text
+        function toggleHelp() {
+            const helpText = document.getElementById('arvHelp');
+            helpText.classList.toggle('show');
+        }
+
+        // Loan form submission
+        document.getElementById('loanForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Validate property address if user selected "identified"
+            if (propertyStatus === 'identified') {
+                if (!selectedPlace) {
+                    alert('Please select a property address');
+                    return;
+                }
+            }
+
+            // Get form values
+            const loanType = document.querySelector('input[name="loanType"]:checked').value;
+            const purchasePrice = parseCurrency(document.getElementById('purchasePrice').value);
+            const rehabCost = parseCurrency(document.getElementById('rehabCost').value);
+            const arv = parseCurrency(document.getElementById('arv').value);
+
+            // Validate minimum values
+            if (purchasePrice < 30000) {
+                alert('Estimated Property Purchase Price must be at least $30,000');
+                return;
+            }
+
+            if (arv < 50000) {
+                alert('ARV (After Repairs Value) must be at least $50,000');
+                return;
+            }
+
+            // Capture property address
+            let propertyAddress = '';
+            if (propertyStatus === 'identified' && selectedPlace) {
+                // Try different property names that might contain the address
+                propertyAddress = selectedPlace.formattedAddress || selectedPlace.address || selectedPlace.name || '';
+                console.log('Property Address captured:', propertyAddress);
+            }
+
+            // Determine interest rate and origination fee
+            let interestRate, originationFeeRate;
+            if (loanType === 'asset') {
+                interestRate = 0.14;
+                originationFeeRate = 0.03;
+            } else {
+                interestRate = 0.12;
+                originationFeeRate = 0.02;
+            }
+
+            // Calculate values
+            const maxLoan = arv * 0.65;
+            const rehabHoldback = rehabCost;
+            const initialFunding = maxLoan - rehabCost;
+            const totalCost = purchasePrice + rehabCost;
+            const downPayment = Math.max(0, totalCost - maxLoan);
+            const originationFee = maxLoan * originationFeeRate;
+            const adminFee = 1800;
+            const totalFees = originationFee + adminFee;
+            const monthlyInterest = (maxLoan * interestRate) / 12;
+            const perDiemInterest = (maxLoan * interestRate) / 360;
+
+            // Store calculation data
+            calculationData = {
+                propertyStatus: propertyStatus,
+                propertyAddress: propertyAddress,
+                loanType: loanType,
+                purchasePrice: purchasePrice,
+                rehabCost: rehabCost,
+                arv: arv,
+                maxLoan: maxLoan,
+                initialFunding: initialFunding,
+                rehabHoldback: rehabHoldback,
+                downPayment: downPayment,
+                originationFee: originationFee,
+                totalFees: totalFees,
+                monthlyInterest: monthlyInterest,
+                perDiemInterest: perDiemInterest
+            };
+
+            // Show contact modal
+            document.getElementById('contactModal').classList.add('show');
+        });
+
+        // Contact form submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Validate form
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const consent = document.getElementById('consent').checked;
+            const disclaimer = document.getElementById('disclaimer').checked;
+
+            let isValid = true;
+
+            // Reset error messages
+            document.querySelectorAll('.error-message').forEach(el => el.classList.remove('show'));
+
+            if (!fullName) {
+                document.getElementById('nameError').classList.add('show');
+                isValid = false;
+            }
+
+            // Strict email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email || !emailRegex.test(email)) {
+                document.getElementById('emailError').classList.add('show');
+                isValid = false;
+            }
+
+            // Phone validation: 9-20 characters, only numbers, +, and -
+            const phoneRegex = /^[0-9+\-]{9,20}$/;
+            if (!phone || !phoneRegex.test(phone)) {
+                document.getElementById('phoneError').classList.add('show');
+                isValid = false;
+            }
+
+            if (!consent) {
+                document.getElementById('consentError').classList.add('show');
+                isValid = false;
+            }
+
+            if (!disclaimer) {
+                document.getElementById('disclaimerError').classList.add('show');
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            // Prepare data for submission
+            const submissionData = {
+                ...calculationData,
+                contactInfo: {
+                    fullName: fullName,
+                    email: email,
+                    phone: phone,
+                    consent: consent,
+                    disclaimer: disclaimer,
+                    timestamp: new Date().toISOString()
+                }
+            };
+
+            // Send to n8n webhook
+            const webhookURL = 'https://kenleal.app.n8n.cloud/webhook/e4c11fa2-c110-4a3e-add3-a670847902fd';
+
+            // Send data to n8n
+            fetch(webhookURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(submissionData)
+            })
+            .then(response => response.json())
+            .then(data => console.log('Successfully sent to n8n:', data))
+            .catch((error) => console.error('Error sending to n8n:', error));
+
+            // For now, log to console
+            console.log('Submission Data:', submissionData);
+
+            // Display results
+            displayResults();
+
+            // Close modal
+            closeModal();
+        });
+
+        function displayResults() {
+            // Update all result values
+            document.getElementById('maxLoan').textContent = displayCurrency(calculationData.maxLoan);
+            document.getElementById('initialFunding').textContent = displayCurrency(calculationData.initialFunding);
+            document.getElementById('rehabHoldback').textContent = displayCurrency(calculationData.rehabHoldback);
+            document.getElementById('downPayment').textContent = displayCurrency(calculationData.downPayment);
+            document.getElementById('originationFee').textContent = displayCurrency(calculationData.originationFee);
+            document.getElementById('totalFees').textContent = displayCurrency(calculationData.totalFees);
+            document.getElementById('monthlyInterest').textContent = displayCurrency(calculationData.monthlyInterest);
+            document.getElementById('perDiemInterest').textContent = displayCurrency(calculationData.perDiemInterest);
+
+            // Show results
+            document.getElementById('resultsPlaceholder').style.display = 'none';
+            document.getElementById('resultsContent').classList.add('show');
+
+            // Scroll to results on mobile
+            if (window.innerWidth <= 1024) {
+                document.getElementById('resultsContent').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('contactModal').classList.remove('show');
+            // Reset form
+            document.getElementById('contactForm').reset();
+            document.querySelectorAll('.error-message').forEach(el => el.classList.remove('show'));
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('contactModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Reset calculator to start over
+        function resetCalculator() {
+            // Reset to step 1
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step1').classList.add('active');
+
+            // Clear form
+            document.getElementById('loanForm').reset();
+
+            // Clear address selection
+            selectedPlace = null;
+            document.getElementById('propertyAddress').value = '';
+
+            // Clear radio selections
+            document.querySelectorAll('.radio-option').forEach(option => option.classList.remove('selected'));
+
+            // Reset address message
+            updateAddressMessage('Please select your property address', 'neutral');
+
+            // Hide results
+            document.getElementById('resultsContent').classList.remove('show');
+            document.getElementById('resultsPlaceholder').style.display = 'flex';
+
+            // Reset calculation data
+            calculationData = {};
+            propertyStatus = '';
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
