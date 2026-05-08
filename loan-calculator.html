@@ -560,15 +560,15 @@
                 <!-- Program Tabs -->
                 <div class="program-tabs">
                     <button class="program-tab active" id="tab1" onclick="selectProgram(1)">
-                        <div class="tab-name">Program 1</div>
+                        <div class="tab-name">Preferred</div>
                         <div class="tab-rate">10% + 3 Points</div>
                     </button>
                     <button class="program-tab" id="tab2" onclick="selectProgram(2)">
-                        <div class="tab-name">Program 2</div>
+                        <div class="tab-name">Core</div>
                         <div class="tab-rate">14% + 3 Points</div>
                     </button>
                     <button class="program-tab" id="tab3" onclick="selectProgram(3)">
-                        <div class="tab-name">Program 3</div>
+                        <div class="tab-name">Velocity</div>
                         <div class="tab-rate">18% Asset-Based</div>
                     </button>
                 </div>
@@ -632,7 +632,7 @@
                                 <h3>Estimated Fees</h3>
                                 <div class="result-breakdown">
                                     <strong>Loan Origination Fee:</strong> <span id="resOriginationFee"></span><br>
-                                    <strong>Administrative Fee:</strong> $1,785.00<br>
+                                    <strong>Administrative Fee:</strong> <span id="resAdminFee"></span><br>
                                     <strong>Total Fees:</strong> <span id="resTotalFees"></span>
                                 </div>
                             </div>
@@ -714,7 +714,8 @@
                 rateLabel: '10%',
                 rate: 0.10,
                 origination: 0.03,
-                adminFee: 1785,
+                adminFee: 1495,
+                term: 12,
                 downPct: 0.20,
                 downLabel: '20% of purchase price'
             },
@@ -723,7 +724,8 @@
                 rateLabel: '14%',
                 rate: 0.14,
                 origination: 0.03,
-                adminFee: 1785,
+                adminFee: 1295,
+                term: 9,
                 downPct: 0.10,
                 downLabel: '10% of purchase price'
             },
@@ -732,7 +734,8 @@
                 rateLabel: '18%',
                 rate: 0.18,
                 origination: 0,
-                adminFee: 1785,
+                adminFee: 995,
+                term: 6,
                 downPct: 0.10,
                 downLabel: '10% of purchase price'
             }
@@ -796,7 +799,8 @@
                 `<span>${prog.label}</span>` +
                 `<span><strong>Rate:</strong> ${prog.rateLabel}</span>` +
                 `<span><strong>Origination:</strong> ${origText}</span>` +
-                `<span><strong>Admin Fee:</strong> $1,785</span>` +
+                `<span><strong>Admin Fee:</strong> $${prog.adminFee.toLocaleString()}</span>` +
+                `<span><strong>Term:</strong> ${prog.term} months</span>` +
                 `<span><strong>Min Down:</strong> ${prog.downLabel}</span>`;
 
             resetResults();
@@ -909,6 +913,7 @@
             document.getElementById('resDownPayment').textContent = downDisplay;
             document.getElementById('resDownPaymentNote').textContent = downNote;
             document.getElementById('resOriginationFee').textContent = fmt(originationFee);
+            document.getElementById('resAdminFee').textContent = fmt(prog.adminFee);
             document.getElementById('resTotalFees').textContent = fmt(totalFees);
             document.getElementById('resMonthly').textContent = monthlyDisplay;
             document.getElementById('resPerDiem').textContent = perDiemDisplay;
